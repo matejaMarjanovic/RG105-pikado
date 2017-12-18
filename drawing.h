@@ -18,6 +18,7 @@ extern double dartPosZ1;
 extern double dartPosZ2;
 extern double dartPosZ3;
 
+extern circle_coords pickCoord1, pickCoord2, pickCoord3, pickCoord4;
 
 // globalne promenljive, zbog optimizacije iscrtavanja
 extern int nBigCircle, nSmallCircle, nBigCircleParts;
@@ -27,6 +28,8 @@ extern circle_coords* trigSmallCircle;
 extern const double radius;
 // ugao jednog od jednakih delova kruga za pikado
 extern const double angle;
+
+void drawEverything();
 
 void drawDartsDarts();
 

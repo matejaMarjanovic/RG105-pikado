@@ -1,3 +1,10 @@
+#ifndef _LOGIC_
+#define _LOGIC_
+
+#include "logic.h"
+
+#endif
+
 #ifndef _DRAWING_
 #define _DRAWING_
 
@@ -5,15 +12,7 @@
 
 #endif
 #include <stdio.h>
-
-#define TIMER_INT 20
-
-int firstFall = 1;
-int shootPhase = 0, pickPhase = 1;
-double shootingSpotX, shootingSpotY, shootingSpotZ = 10;
-double moveDartX, moveDartY = 0.01, moveDartZ = 0.2;
-double grav = 0.005;
-double direction = 1, decDirection = 0.05;
+#include <time.h>
 
 void onTimer(int value);
 void onDisplay();
@@ -37,6 +36,8 @@ int main(int argc, char** argv) {
     glutKeyboardFunc(onKeyboard);
     glutReshapeFunc(onReshape);
     
+    srand(time(NULL));
+    
     glutMainLoop();
     free(trigBigCircle);
     free(trigSmallCircle);
@@ -49,42 +50,15 @@ void onDisplay() {
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(30, 0, 15, 0, 0, 0, 0, 1, 0);
+    gluLookAt(cameraX, cameraY, cameraZ, 0, 0, 0, 0, 1, 0);
     
-    glPushMatrix();
-        glTranslatef(0, 0, -10);
-        drawDartsMachine();    
-    glPopMatrix();
-    
-    
-    glPushMatrix();
-        glTranslatef(0, 0, 5);
-        drawDartsDarts();
-    glPopMatrix();
+    drawEverything();
     
     glutSwapBuffers();
 }
 
 void onKeyboard(unsigned char c, int mouseX, int mouseY) {
-    switch(c) {
-        case 27:
-            exit(EXIT_SUCCESS);
-        case 'p':
-        case 'P':
-            if(pickPhase) { // u toku je biranje tacke u koju se gadja
-                shootingSpotX = mouseX;
-                shootingSpotY = mouseY;
-                pickPhase = 0;
-                shootPhase = 1; // sad moze da se gadja
-            }
-            break;
-        case 's':
-        case 'S':
-            if(shootPhase) { // gadja se
-                glutTimerFunc(TIMER_INT, onTimer, 0);
-                break;
-            }
-    }
+    logicKeyPressed(c);
 }
 
 void onTimer(int value) {
@@ -92,29 +66,7 @@ void onTimer(int value) {
         return;
     }
     
-    dartPosX1 += moveDartX;
-    dartPosX2 += moveDartX;
-    
-    dartPosY1 += moveDartY;
-    dartPosY2 += moveDartY;
-    dartPosY3 += moveDartY;
-    
-    dartPosZ1 -= moveDartZ;
-    dartPosZ2 -= moveDartZ;
-    dartPosZ3 -= moveDartZ;
-        
-    moveDartY += grav;
-    
-    if(dartPosY2 >= 9.5 && firstFall) { // samo jednom kreni da padas kada stignes/predjes odredjenu tacku
-        grav *= -0.8;
-        firstFall = 0;
-    }
-    
-    glutPostRedisplay();
-    
-    if(dartPosZ3 <= -11.5) { // stigao do table
-        shootPhase = 0;
-    }
+    logicShootDart();
     
     if(shootPhase) { // ako i dalje leti nastavi da se pomeras
         glutTimerFunc(TIMER_INT, onTimer, 0);
