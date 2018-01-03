@@ -9,14 +9,9 @@ typedef struct {
     double x, y;
 }circle_coords;
 
-extern double dartPosX1;
-extern double dartPosX2;
-extern double dartPosY1;
-extern double dartPosY2;
-extern double dartPosY3;
-extern double dartPosZ1;
-extern double dartPosZ2;
-extern double dartPosZ3;
+GLfloat diffuseMaterial[4];
+
+extern double dartPosX, dartPosY, dartPosZ;
 
 extern circle_coords pickCoord1, pickCoord2, pickCoord3, pickCoord4;
 

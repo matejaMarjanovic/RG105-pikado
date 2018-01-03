@@ -12,17 +12,8 @@
 
 #endif
 
-// koordinate delova kruga u koje korisnik zeli da puca
-circle_coords pickCoord1, pickCoord2, pickCoord3, pickCoord4;
-
-// pocetne i krajnje tacke iglice
-double dartPosX1 = 0, dartPosX2 = 0;
-double dartPosY1 = 8, dartPosY2 = 7.75, dartPosY3 = 7.5;
-double dartPosZ1 = 9, dartPosZ2 = 10.5, dartPosZ3 = 12;
-
-double startDartX1 = 0, startDartX2 = 0;
-double startDartY1 = 8, startDartY2 = 7.75, startDartY3 = 7.5;
-double startDartZ1 = 9, startDartZ2 = 10.5, startDartZ3 = 12;
+// pocetne koordinate strelice
+double dartPosX = 0, dartPosY = 7.5, dartPosZ = 10.5;
 
 
 // globalne promenljive, zbog optimizacije iscrtavanja
@@ -35,25 +26,20 @@ const double radius = 7.5;
 const double angle = M_PI/10;
 
 void pickShootingSpot() {
-    if(pickPhase == 0) {
+    if(pickPhase1 == 0 && pickPhase2 == 0) {
         return;
     }
-    double pickProduct = level*1.0/3;
-    pickCoord1.x = radius*trigBigCircle[currentIndex].x*pickProduct; 
-    pickCoord1.y = 7.5+radius*trigBigCircle[currentIndex].y*pickProduct;
-    pickCoord2.x = radius*trigBigCircle[currentIndex].x*(pickProduct-1.0/3);
-    pickCoord2.y = 7.5+radius*trigBigCircle[currentIndex].y*(pickProduct-1.0/3);
-    pickCoord3.x = radius*trigBigCircle[(currentIndex+20)%400].x*(pickProduct-1.0/3);
-    pickCoord3.y = 7.5+radius*trigBigCircle[(currentIndex+20)%400].y*(pickProduct-1.0/3);
-    pickCoord4.x = radius*trigBigCircle[(currentIndex+20)%400].x*pickProduct;
-    pickCoord4.y = 7.5+radius*trigBigCircle[(currentIndex+20)%400].y*pickProduct;
+    // horizontalna linija
+    glDisable(GL_LIGHTING);
+    glLineWidth(2);
+    glBegin(GL_LINES);
+        glVertex3f(-horX, horY, 0.05);
+        glVertex3f(horX, horY, 0.05);
+    glEnd();
     
-    glColor3f(.6, .6, .6);
-    glBegin(GL_POLYGON);
-        glVertex3f(pickCoord1.x, pickCoord1.y, 0.0003);
-        glVertex3f(pickCoord2.x, pickCoord2.y, 0.0003);
-        glVertex3f(pickCoord3.x, pickCoord3.y, 0.0003);
-        glVertex3f(pickCoord4.x, pickCoord4.y, 0.0003);
+    glBegin(GL_LINES);
+        glVertex3f(verX, -verY, .1);
+        glVertex3f(verX, verY, .1);
     glEnd();
 }
 
@@ -95,16 +81,24 @@ void initializeTrigMatrix() {
 }
 
 void drawDartsCircle() {
-    glColor3f(0, 1, 0); // krug u samom centru (manji)
+    diffuseMaterial[0] = 0;
+    diffuseMaterial[1] = 1;
+    diffuseMaterial[2] = 0;
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuseMaterial);
     glBegin(GL_POLYGON);
         for(int i = 0; i < nSmallCircle; i++) {
+            glNormal3f(radius/15*trigSmallCircle[i].x, 7.5 + radius/15*trigSmallCircle[i].y, 0.0001);
             glVertex3f(radius/15*trigSmallCircle[i].x, 7.5 + radius/15*trigSmallCircle[i].y, 0.0001);
         }
     glEnd();
     
-    glColor3f(1, 0, 0); // krug u samom centru (veci)
+    diffuseMaterial[0] = 1;
+    diffuseMaterial[1] = 0;
+    diffuseMaterial[2] = 0;
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuseMaterial);
     glBegin(GL_POLYGON);
         for(int i = 0; i < nSmallCircle; i++) {
+            glNormal3f(radius/25*trigSmallCircle[i].x, 7.5 + radius/25*trigSmallCircle[i].y, 0.0002);
             glVertex3f(radius/25*trigSmallCircle[i].x, 7.5 + radius/25*trigSmallCircle[i].y, 0.0002);
         }
     glEnd();
@@ -112,25 +106,43 @@ void drawDartsCircle() {
     // najveci krug, crno-beli
     for(int j = 0; j < 20; j++) { // 20 delova kruga ima
         int color = j % 2;
-        glColor3f(color, color, color);
+        diffuseMaterial[0] = color;
+        diffuseMaterial[1] = color;
+        diffuseMaterial[2] = color;
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuseMaterial);
         glBegin(GL_POLYGON);
+            glNormal3f(0, 7.5, 0);
             glVertex3f(0, 7.5, 0); // +1
             for(int i = 0; i < nBigCircleParts; i++) { // svaki ima 21 temena
+                glNormal3f(radius*trigBigCircle[j*20 + i].x, 7.5 + radius*trigBigCircle[j*20 + i].y, 0);
                 glVertex3f(radius*trigBigCircle[j*20 + i].x, 7.5 + radius*trigBigCircle[j*20 + i].y, 0);
             } 
         glEnd();
     }
     
+    glLineWidth(5);
     // crveno-zeleni prsten na krugu (srednji)
     for(int j = 0; j < 20; j++) {
         glLineWidth(2.5);
-        if(j%2 == 0)
-                glColor3f(0, 1, 0);
-        else
-            glColor3f(1, 0, 0);
-        glBegin(GL_LINE_STRIP);
+        if(j%2 == 0) {
+            diffuseMaterial[0] = 0;
+            diffuseMaterial[1] = 1;
+            diffuseMaterial[2] = 0;
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuseMaterial);
+        }
+        else {
+            diffuseMaterial[0] = 1;
+            diffuseMaterial[1] = 0;
+            diffuseMaterial[2] = 0;
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuseMaterial);
+        }
+        glBegin(GL_TRIANGLE_STRIP);
             for(int i = 0; i < nBigCircleParts; i++) {
+                glNormal3f(2*radius*trigBigCircle[j*20 + i].x/3, 7.5 + 2*radius*trigBigCircle[j*20 + i].y/3, 0.0001);
                 glVertex3f(2*radius*trigBigCircle[j*20 + i].x/3, 7.5 + 2*radius*trigBigCircle[j*20 + i].y/3, 0.0001);
+                
+                glNormal3f(15*radius*trigBigCircle[j*20 + i].x/24, 7.5 + 15*radius*trigBigCircle[j*20 + i].y/24, 0.0001);
+                glVertex3f(15*radius*trigBigCircle[j*20 + i].x/24, 7.5 + 15*radius*trigBigCircle[j*20 + i].y/24, 0.0001);
             } 
         glEnd();
     }
@@ -138,13 +150,25 @@ void drawDartsCircle() {
     // crveno-zeleni prsten na krugu (mali)
     for(int j = 0; j < 20; j++) {
         glLineWidth(2.5);
-        if(j%2 == 0)
-            glColor3f(0, 1, 0);
-        else
-            glColor3f(1, 0, 0);
+        if(j%2 == 0) {
+            diffuseMaterial[0] = 0;
+            diffuseMaterial[1] = 1;
+            diffuseMaterial[2] = 0;
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuseMaterial);
+        }
+        else {
+            diffuseMaterial[0] = 1;
+            diffuseMaterial[1] = 0;
+            diffuseMaterial[2] = 0;
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuseMaterial);
+        }
         glBegin(GL_LINE_STRIP);
             for(int i = 0; i < nBigCircleParts; i++) {
+                glNormal3f(radius*trigBigCircle[j*20 + i].x/3, 7.5 + radius*trigBigCircle[j*20 + i].y/3, 0.0001);
                 glVertex3f(radius*trigBigCircle[j*20 + i].x/3, 7.5 + radius*trigBigCircle[j*20 + i].y/3, 0.0001);
+                
+                glNormal3f(7.2*radius*trigBigCircle[j*20 + i].x/24, 7.5 + 7.2*radius*trigBigCircle[j*20 + i].y/24, 0.0001);
+                glVertex3f(7.2*radius*trigBigCircle[j*20 + i].x/24, 7.5 + 7.2*radius*trigBigCircle[j*20 + i].y/24, 0.0001);
             } 
         glEnd();
     }
@@ -152,13 +176,25 @@ void drawDartsCircle() {
     // crveno-zeleni prsten na krugu (veliki)
     for(int j = 0; j < 20; j++) {
         glLineWidth(2.5);
-        if(j%2 == 0)
-            glColor3f(0, 1, 0);
-        else
-            glColor3f(1, 0, 0);
-        glBegin(GL_LINE_STRIP);
+        if(j%2 == 0) {
+            diffuseMaterial[0] = 0;
+            diffuseMaterial[1] = 1;
+            diffuseMaterial[2] = 0;
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuseMaterial);
+        }
+        else {
+            diffuseMaterial[0] = 1;
+            diffuseMaterial[1] = 0;
+            diffuseMaterial[2] = 0;
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuseMaterial);
+        }
+        glBegin(GL_TRIANGLE_STRIP);
             for(int i = 0; i < nBigCircleParts; i++) {
+                glNormal3f(radius*trigBigCircle[j*20 + i].x, 7.5 + radius*trigBigCircle[j*20 + i].y, 0.0001);
                 glVertex3f(radius*trigBigCircle[j*20 + i].x, 7.5 + radius*trigBigCircle[j*20 + i].y, 0.0001);
+                
+                glNormal3f(23*radius*trigBigCircle[j*20 + i].x/24, 7.5 + 23*radius*trigBigCircle[j*20 + i].y/24, 0.0001);
+                glVertex3f(23*radius*trigBigCircle[j*20 + i].x/24, 7.5 + 23*radius*trigBigCircle[j*20 + i].y/24, 0.0001);
             } 
         glEnd();
     }
@@ -171,15 +207,22 @@ void drawDartsMachine() {
 
 void drawDartsEverythingElse() {
     glPushMatrix(); // iscrtaj crnu kocku i izvrsi transformacije
-        glColor3f(0, 0, 0);
-        glTranslatef(-1, 8, -10);
+        diffuseMaterial[0] = 0;
+        diffuseMaterial[1] = 0;
+        diffuseMaterial[2] = 0;
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuseMaterial);
+        
+        glTranslatef(-1, 8, -9);
         glScalef(32, 35, 15);
         glutSolidCube(1);
     glPopMatrix();
     
     glPushMatrix(); // iscrtaj belu zicanu kocku koja ce da bude preko crne
-        glColor3f(1, 1, 1);
-        glTranslatef(-1, 8, -10);
+        diffuseMaterial[0] = 1;
+        diffuseMaterial[1] = 1;
+        diffuseMaterial[2] = 1;
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuseMaterial);
+        glTranslatef(-1, 8, -9);
         glScalef(32, 35, 15);
         glutWireCube(1.01);
     glPopMatrix();
@@ -187,17 +230,14 @@ void drawDartsEverythingElse() {
 
 void drawDartsDarts() {
     glLineWidth(1);
-    glBegin(GL_LINES);
-        glColor3f(0, 0, 0);
-        glVertex3f(dartPosX1, dartPosY1, dartPosZ1);
-        glColor3f(.7, .7, .7);
-        glVertex3f(dartPosX2, dartPosY2, dartPosZ2);
-    glEnd();
+    diffuseMaterial[0] = .8;
+    diffuseMaterial[1] = .8;
+    diffuseMaterial[2] = .2;
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuseMaterial);
     
-    glLineWidth(3);
-    glColor3f(1, 0, 0);
-    glBegin(GL_LINES);
-        glVertex3f(dartPosX1, dartPosY2, dartPosZ2);
-        glVertex3f(dartPosX2, dartPosY3, dartPosZ3);
-    glEnd();
+    glPushMatrix();
+        glTranslatef(dartPosX, dartPosY, dartPosZ);
+        glRotatef(180, 0, 1, 0);
+        glutSolidCone(0.1, 1.6, 10, 10);
+    glPopMatrix();
 }
