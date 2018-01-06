@@ -13,7 +13,7 @@
 #endif
 
 // pocetne koordinate strelice
-double dartPosX = 0, dartPosY = 7.5, dartPosZ = 10.5;
+double dartPosX = 0, dartPosY = 7.1, dartPosZ = 10.5;
 
 
 // globalne promenljive, zbog optimizacije iscrtavanja
@@ -162,7 +162,7 @@ void drawDartsCircle() {
             diffuseMaterial[2] = 0;
             glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuseMaterial);
         }
-        glBegin(GL_LINE_STRIP);
+        glBegin(GL_TRIANGLE_STRIP);
             for(int i = 0; i < nBigCircleParts; i++) {
                 glNormal3f(radius*trigBigCircle[j*20 + i].x/3, 7.5 + radius*trigBigCircle[j*20 + i].y/3, 0.0001);
                 glVertex3f(radius*trigBigCircle[j*20 + i].x/3, 7.5 + radius*trigBigCircle[j*20 + i].y/3, 0.0001);
@@ -236,6 +236,7 @@ void drawDartsDarts() {
     glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuseMaterial);
     
     glPushMatrix();
+        glRotatef(animParam*2*M_PI/3 - M_PI/3, 1, 0, 0);
         glTranslatef(dartPosX, dartPosY, dartPosZ);
         glRotatef(180, 0, 1, 0);
         glutSolidCone(0.1, 1.6, 10, 10);

@@ -17,6 +17,7 @@
 #define FIRST_PERSON 0
 #define THIRD_PERSON 1
 
+static unsigned strength = 0;
 int cameraOption = FIRST_PERSON;
 double animParam = 0;
 double verX = 0, horY = 7.5, horX = 60, verY = 60;
@@ -52,18 +53,21 @@ void logicKeyPressed(unsigned char c) {
                 glutPostRedisplay();
             }
             break;
+        case ' ':
+            strength++;
+            break;
         case 'f':
         case 'F':
             if(shootPhase) { // gadja se
-                shootingSpotY = horY;
-                shootingSpotX = verX;
+                printf("%d\n", strength);
+                calculateShootingSpot();
                 glutTimerFunc(TIMER_INT, onTimer, 0);
             }
             break;
         case 'a':
         case 'A':
             if(pickPhase1) {
-                verX -= 0.1;
+                verX -= 0.065;
                 glutPostRedisplay();
             }
             
@@ -71,21 +75,21 @@ void logicKeyPressed(unsigned char c) {
         case 'd':
         case 'D':
             if(pickPhase1) {
-                verX += 0.1;
+                verX += 0.065;
                 glutPostRedisplay();
             }
             break;
         case 'w':
         case 'W':
             if(pickPhase2) {
-                horY += 0.1;
+                horY += 0.065;
                 glutPostRedisplay();
             }
             break;
         case 's':
         case 'S':
             if(pickPhase2) {
-                horY -= 0.1;
+                horY -= 0.065;
                 glutPostRedisplay();
             }
             break;
@@ -107,6 +111,17 @@ void logicKeyPressed(unsigned char c) {
             }
             glutPostRedisplay();
             break;
+    }
+}
+
+void calculateShootingSpot() {
+    if(strength == 19) {
+        shootingSpotY = horY;
+        shootingSpotX = verX;
+    }
+    else {
+        shootingSpotX = verX + (double)rand()/RAND_MAX*abs(strength - 19.0)/3.7;
+        shootingSpotY = horY + (double)rand()/RAND_MAX*abs(strength - 19.0)/3.7;
     }
 }
 
@@ -132,10 +147,10 @@ void logicShootDart() {
     }
         
     dartPosX = startDartX + animParam*(shootingSpotX - startDartX);
-    dartPosY = startDartY + animParam*(shootingSpotY - startDartY);
+    dartPosY = startDartY + animParam*(shootingSpotY - startDartY) + 3*sin(animParam*M_PI) - 0.5;
     dartPosZ = startDartZ + animParam*(shootingSpotZ - startDartZ);
     
-    if(animParam >= 1) { // stigao do table
+    if(animParam > 1) { // stigao do table
         shootPhase = 0;
     }
     
@@ -143,8 +158,11 @@ void logicShootDart() {
 }
 
 void logicResetValues() {
+    strength = 0;
     horX = 60;
     verY = 60;
+    verX = 0;
+    horY = 7.5;
     
     pickPhase1 = 1;
     pickPhase2 = 0;

@@ -13,3 +13,4 @@ void logicShootDart();
 void logicResetValues();
 void logicResetCamera();
 void logicKeyPressed(unsigned char c);
+void calculateShootingSpot();
