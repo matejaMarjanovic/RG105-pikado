@@ -1,5 +1,6 @@
 #include "lighting.hpp"
 #include "dartboard.hpp"
+#include "dart.hpp"
 #include <iostream>
 
 void initialize();
@@ -7,10 +8,16 @@ void render(void);
 void keyboard(unsigned char c, int x, int y);
 void mouse(int button, int state, int x, int y);
 void reshape(int w, int h);
+void onTimer(int val);
 
+double x, y, z;
 int width, height;
 
 int main(int argc, char** argv) {
+    x = 0;
+    y = 0;
+    z = -7;
+    
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     
@@ -27,6 +34,14 @@ int main(int argc, char** argv) {
     
     glutMainLoop();
     return 0;
+}
+
+void onTimer(int val) {
+    x += 0.05;
+    y += 0.1;
+    glutPostRedisplay();
+    
+    glutTimerFunc(20, onTimer, 0);
 }
 
 void initialize() {
@@ -62,7 +77,7 @@ void render(void) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(
-        0, 0, -18,
+        0, 0, -10,
         0, 0, 0,
         0, 1, 0
     );
@@ -73,6 +88,9 @@ void render(void) {
         glRotatef(-10, 1, 0, 0);
         dartboard.render();
     glPopMatrix();
+    
+    Dart dart{x, y, z, 2};
+    dart.render();
         
     glutSwapBuffers();
 }
@@ -81,6 +99,9 @@ void keyboard(unsigned char c, int x, int y) {
     switch(c) {
         case 27:
             exit(EXIT_SUCCESS);
+        case 'g':
+            glutTimerFunc(10, onTimer, 0);
+            break;
     }
 }
 

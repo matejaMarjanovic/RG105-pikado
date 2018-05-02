@@ -81,7 +81,7 @@ void DartboardCircle::drawBigCircle() const {
         glBegin(GL_POLYGON);
             glNormal3f(0, 0, -1);
             glVertex3f(0, 0, 0);
-            for(double angle = -M_PI/20 + i*M_PI/10; angle <= M_PI/20 + i*M_PI/10; angle += M_PI/140) {
+            for(double angle = -M_PI/20 + i*M_PI/10; angle <= M_PI/20 + i*M_PI/10; angle += M_PI/480) {
                 glVertex3f(cos(angle), sin(angle), 0);
             }
             glVertex3f(0, 0, 0);
@@ -140,4 +140,6 @@ void DartboardCircle::drawLineCircle2() const {
         glEnd();   
     }
 }
+
+
 
