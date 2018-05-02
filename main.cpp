@@ -1,6 +1,5 @@
 #include "lighting.hpp"
-#include "dartboard.hpp"
-#include "dart.hpp"
+#include "game.hpp"
 #include <iostream>
 
 void initialize();
@@ -10,14 +9,13 @@ void mouse(int button, int state, int x, int y);
 void reshape(int w, int h);
 void onTimer(int val);
 
+int animationParameter = 0;
+
 double x, y, z;
 int width, height;
+Game game{Dartboard(DartboardCircle{5.7}, 15, 20), Dart{0, 0, -13, 2, 0.1, 2.1}};
 
 int main(int argc, char** argv) {
-    x = 0;
-    y = 0;
-    z = -7;
-    
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     
@@ -25,6 +23,7 @@ int main(int argc, char** argv) {
     glutInitWindowSize(640, 480);
     glutCreateWindow("Darts");
     
+    glutFullScreen();
     glutReshapeFunc(reshape);
     glutDisplayFunc(render);
     glutKeyboardFunc(keyboard);
@@ -34,14 +33,6 @@ int main(int argc, char** argv) {
     
     glutMainLoop();
     return 0;
-}
-
-void onTimer(int val) {
-    x += 0.05;
-    y += 0.1;
-    glutPostRedisplay();
-    
-    glutTimerFunc(20, onTimer, 0);
 }
 
 void initialize() {
@@ -77,21 +68,14 @@ void render(void) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(
-        0, 0, -10,
+        -2, 0.5, -10,
         0, 0, 0,
         0, 1, 0
     );
     
-    Dartboard dartboard(DartboardCircle{5.7}, 15, 20);
     
-    glPushMatrix();
-        glRotatef(-10, 1, 0, 0);
-        dartboard.render();
-    glPopMatrix();
+    game.render();
     
-    Dart dart{x, y, z, 2};
-    dart.render();
-        
     glutSwapBuffers();
 }
 
@@ -100,8 +84,19 @@ void keyboard(unsigned char c, int x, int y) {
         case 27:
             exit(EXIT_SUCCESS);
         case 'g':
-            glutTimerFunc(10, onTimer, 0);
-            break;
+            if(!animationParameter) {
+                animationParameter = 1;
+                glutTimerFunc(20, onTimer, 0);
+            }
+    }
+}
+
+void onTimer(int value) {
+    game.play();
+    
+    glutPostRedisplay();
+    if(animationParameter) {
+        glutTimerFunc(20, onTimer, 0);
     }
 }
 
@@ -111,4 +106,5 @@ void mouse(int button, int state, int x, int y) {
             exit(EXIT_SUCCESS);
     }
 }
+
 

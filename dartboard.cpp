@@ -10,21 +10,26 @@ void Dartboard::render(void) const {
     dartboardMaterial.setLighting();
     
     glPushMatrix();
-        glScalef(m_width, m_height, 2.5);
-        glutSolidCube(1);
+        glRotatef(0.001, 1, 0, 0);
+        
+        glPushMatrix();
+            glScalef(m_width, m_height, 2.5);
+            glutSolidCube(1);
+        glPopMatrix();
+        
+        glPushMatrix();
+            m_dartCirc.render();
+        glPopMatrix();
+
     glPopMatrix();
-    
-    m_dartCirc.render();
 }
 
 void DartboardCircle::render() const {
-    glPushMatrix();
-        glScalef(m_radius, m_radius, 1.0001);
-        drawBigCircle();
-        drawLineCircle1();
-        drawLineCircle2();
-        drawCentralCirlces();
-    glPopMatrix();
+    glScalef(m_radius, m_radius, 1);
+    drawBigCircle();
+    drawLineCircle1();
+    drawLineCircle2();
+    drawCentralCirlces();
 }
 
 void DartboardCircle::drawCentralCirlces() const {

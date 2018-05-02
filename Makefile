@@ -1,10 +1,13 @@
 CC = g++
 CFLAGS = -Wall -lGLU -lglut -lGL -std=c++14
 
-pikado: main.o lighting.o dartboard.o dart.o
+pikado: main.o lighting.o dartboard.o dart.o game.o
 	$(CC) $^ -o $@ $(CFLAGS)
 
 main.o: main.cpp lighting.hpp dartboard.hpp
+	$(CC) -c $< $(CFLAGS)
+
+game.o: game.cpp game.hpp dartboard.hpp dart.hpp
 	$(CC) -c $< $(CFLAGS)
 
 lighting.o: lighting.cpp lighting.hpp
