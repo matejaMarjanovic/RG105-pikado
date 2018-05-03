@@ -1,24 +1,29 @@
 CC = g++
-CFLAGS = -Wall -lGLU -lglut -lGL -std=c++14
+CFLAGS = -Wall -lGLU -lglut -lGL -std=c++14 -I./include
 
-pikado: main.o lighting.o dartboard.o dart.o game.o
+all: obj pikado
+
+pikado: obj/main.o obj/lighting.o obj/dartboard.o obj/dart.o obj/game.o
 	$(CC) $^ -o $@ $(CFLAGS)
 
-main.o: main.cpp lighting.hpp dartboard.hpp
-	$(CC) -c $< $(CFLAGS)
+obj/main.o: main.cpp include/lighting.hpp include/dartboard.hpp
+	$(CC) -c -o $@ $< $(CFLAGS)
 
-game.o: game.cpp game.hpp dartboard.hpp dart.hpp
-	$(CC) -c $< $(CFLAGS)
+obj/game.o: game.cpp include/game.hpp include/dartboard.hpp include/dart.hpp
+	$(CC) -c -o $@ $< $(CFLAGS)
 
-lighting.o: lighting.cpp lighting.hpp
-	$(CC) -c $< $(CFLAGS)
+obj/lighting.o: lighting.cpp include/lighting.hpp
+	$(CC) -c -o $@ $< $(CFLAGS)
 
-dartboard.o: dartboard.cpp lighting.hpp dartboard.hpp
-	$(CC) -c $< $(CFLAGS)
+obj/dartboard.o: dartboard.cpp include/lighting.hpp include/dartboard.hpp
+	$(CC) -c -o $@ $< $(CFLAGS)
 
-dart.o: dart.cpp lighting.hpp dart.hpp
-	$(CC) -c $< $(CFLAGS)
+obj/dart.o: dart.cpp include/lighting.hpp include/dart.hpp
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+obj:
+	@test ! -d $@ && mkdir $@
 
 .PHONY: clean
 clean:
-	rm *.o pikado
+	rm -rf obj/ pikado
