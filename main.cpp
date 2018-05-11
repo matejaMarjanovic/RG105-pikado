@@ -1,5 +1,6 @@
 #include "lighting.hpp"
 #include "game.hpp"
+#include "camera.hpp"
 #include <iostream>
 
 void initialize();
@@ -9,11 +10,12 @@ void mouse(int button, int state, int x, int y);
 void reshape(int w, int h);
 void onTimer(int val);
 
-int animationParameter = 0;
+double animationParameter = 0;
 
 double x, y, z;
 int width, height;
-Game game{Dartboard(DartboardCircle{5.7}, 15, 20), Dart{0, 0, -13, 2, 0.1, 2.1}};
+Game game{Dartboard{DartboardCircle{5.7}, 15, 20}, Dart{0, 0, -13, 1, 0.1, 2.7, ShootingSpot{0, 0, 0}}};
+Camera cam{game};
 
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
@@ -43,9 +45,9 @@ void initialize() {
     glEnable(GL_LIGHT0);
     
     ObjectLighting objLight{
-        std::vector<GLfloat>{0.1, 0.1, 0.1, 1},
-        std::vector<GLfloat>{0.9, 0.9, 0.9, 1},
-        std::vector<GLfloat>{1, 1, 1, 1},
+        std::vector<GLfloat>{0.4, 0.4, 0.4, 1},
+        std::vector<GLfloat>{0.6, 0.6, 0.6, 1},
+        std::vector<GLfloat>{.8, .8, .8, 1},
         std::vector<GLfloat>{1, 1, 1, 0},
         GL_LIGHT0
     };
@@ -65,14 +67,7 @@ void reshape(int w, int h) {
 void render(void) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(
-        -2, 0.5, -10,
-        0, 0, 0,
-        0, 1, 0
-    );
-    
+    cam.changeCam(game.dart());
     
     game.render();
     
@@ -84,19 +79,44 @@ void keyboard(unsigned char c, int x, int y) {
         case 27:
             exit(EXIT_SUCCESS);
         case 'g':
-            if(!animationParameter) {
-                animationParameter = 1;
+            if(!game.m_shootPhase) {
+                game.m_pickPhase = false;
+                game.m_shootPhase = true;
+                cam.m_pickPhase = false;
+                cam.m_shootPhase = true;
+                cam.setCam();
+                game.dart().setShoot(game.shoot());
                 glutTimerFunc(20, onTimer, 0);
             }
+            break;
+        case 'w':
+            game.goUp();
+            glutPostRedisplay();
+            break;
+        case 'a':
+            game.goLeft();
+            glutPostRedisplay();
+            break;
+        case 's':
+            game.goDown();
+            glutPostRedisplay();
+            break;
+        case 'd':
+            game.goRight();
+            glutPostRedisplay();
+            break;
     }
 }
 
 void onTimer(int value) {
-    game.play();
-    
-    glutPostRedisplay();
-    if(animationParameter) {
-        glutTimerFunc(20, onTimer, 0);
+    if(animationParameter <= 1) {
+        game.play(animationParameter);
+        animationParameter += 0.015;
+        
+        glutPostRedisplay();
+        if(game.m_shootPhase) {
+            glutTimerFunc(20, onTimer, 0);
+        }
     }
 }
 

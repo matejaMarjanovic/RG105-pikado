@@ -39,12 +39,18 @@ void Dart::move(double x, double y, double z){
     m_posZ = z;
 }
 
-double Dart::posX() const {
-    return m_posX;
+void Dart::setShoot(const ShootingSpot &shoot) {
+    m_shoot.m_posX = shoot.m_posX;
+    m_shoot.m_posY = shoot.m_posY;
+    m_shoot.m_posZ = shoot.m_posZ;
 }
-double Dart::posY() const {
-    return m_posY;
+
+double Dart::deltaX() const {
+    return m_shoot.m_posX - m_startPosX;
 }
-double Dart::posZ() const {
-    return m_posZ;
+double Dart::deltaY() const {
+    return m_shoot.m_posY - m_startPosY;
+}
+double Dart::deltaZ() const {
+    return m_shoot.m_posZ - m_startPosZ;
 }

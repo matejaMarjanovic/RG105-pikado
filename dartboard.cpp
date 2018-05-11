@@ -9,9 +9,7 @@ void Dartboard::render(void) const {
     };
     dartboardMaterial.setLighting();
     
-    glPushMatrix();
-        glRotatef(0.001, 1, 0, 0);
-        
+    glPushMatrix();        
         glPushMatrix();
             glScalef(m_width, m_height, 2.5);
             glutSolidCube(1);
@@ -86,7 +84,7 @@ void DartboardCircle::drawBigCircle() const {
         glBegin(GL_POLYGON);
             glNormal3f(0, 0, -1);
             glVertex3f(0, 0, 0);
-            for(double angle = -M_PI/20 + i*M_PI/10; angle <= M_PI/20 + i*M_PI/10; angle += M_PI/480) {
+            for(double angle = -M_PI/19.999999 + i*M_PI/10; angle <= M_PI/19.999999 + i*M_PI/10; angle += M_PI/140) {
                 glVertex3f(cos(angle), sin(angle), 0);
             }
             glVertex3f(0, 0, 0);
@@ -112,9 +110,9 @@ void DartboardCircle::drawLineCircle1() const {
         i % 2 ? greenMaterial.setLighting() : redMaterial.setLighting();
         glBegin(GL_TRIANGLE_STRIP);
             glNormal3f(0, 0, -1);
-            for(double angle = -M_PI/20 + i*M_PI/10; angle <= M_PI/20 + i*M_PI/10; angle += M_PI/140) {
-                glVertex3f(0.56*cos(angle), 0.56*sin(angle), 0);
-                glVertex3f(0.63*cos(angle), 0.63*sin(angle), 0);
+            for(double angle = -M_PI/19.999999 + i*M_PI/10; angle <= M_PI/19.999999 + i*M_PI/10; angle += M_PI/140) {
+                glVertex3f(0.57*cos(angle), 0.57*sin(angle), 0);
+                glVertex3f(0.62*cos(angle), 0.62*sin(angle), 0);
             }
         glEnd();   
     }
@@ -138,9 +136,9 @@ void DartboardCircle::drawLineCircle2() const {
         i % 2 ? greenMaterial.setLighting() : redMaterial.setLighting();
         glBegin(GL_TRIANGLE_STRIP);
             glNormal3f(0, 0, -1);
-            for(double angle = -M_PI/20 + i*M_PI/10; angle < M_PI/20 + i*M_PI/10; angle += M_PI/140) {
+            for(double angle = -M_PI/19.999999 + i*M_PI/10; angle < M_PI/19.999999 + i*M_PI/10; angle += M_PI/140) {
                 glVertex3f(cos(angle), sin(angle), 0);
-                glVertex3f(0.93*cos(angle), 0.93*sin(angle), 0);
+                glVertex3f(0.95*cos(angle), 0.95*sin(angle), 0);
             }
         glEnd();   
     }
