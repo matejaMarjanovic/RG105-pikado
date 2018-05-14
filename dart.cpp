@@ -1,35 +1,60 @@
 #include "dart.hpp"
 
 void Dart::render() const {
-    
-    ObjectMaterial blueMaterial{
+    ObjectMaterial whiteMaterial{
         std::vector<GLfloat>{0.05, 0.05, 0.05, 1},
-        std::vector<GLfloat>{0.15, 0.15, 0.85, 1},
+        std::vector<GLfloat>{0.95, 0.95, 0.95, 1},
         std::vector<GLfloat>{0.6, 0.6, 0.6, 1},
         120
     };
     
-    ObjectMaterial goldMaterial{
-        std::vector<GLfloat>{0.05, 0.05, 0.05, 1},
-        std::vector<GLfloat>{0.9, 0.6, 0.1, 1},
-        std::vector<GLfloat>{0.6, 0.6, 0.6, 1},
-        120
-    };
-    
-    
-    glRotatef(15, 1, 0, 0);
     glTranslatef(m_posX, m_posY, m_posZ);
     
+    whiteMaterial.setLighting();
     glPushMatrix();
-        goldMaterial.setLighting();
         glTranslatef(0, 0, 1.5*m_length);
         glutSolidCone(m_radius, m_length*0.4, 40, 40);
     glPopMatrix();
     
     glPushMatrix();
-        blueMaterial.setLighting();
         glTranslatef(0, 0, m_length);
-        gluCylinder(gluNewQuadric(), m_radius, m_radius, m_length*0.6, 30, 30);
+        glBegin(GL_TRIANGLE_STRIP);
+            for(double i = 0; i < 2*M_PI; i += M_PI/20) {
+                glNormal3f(cos(i), sin(i), 0);
+                glVertex3f(m_radius*cos(i), m_radius*sin(i), 0);
+                
+                glNormal3f(cos(i), sin(i), 0);
+                glVertex3f(m_radius*cos(i), m_radius*sin(i), -m_length);
+            }
+        glEnd();
+    glPopMatrix();
+    
+    glPushMatrix();
+        glBegin(GL_POLYGON);
+            glNormal3f(-1, 0, 0);
+            glVertex3f(0, 0, 0);
+            glVertex3f(0, 0, -0.24);
+            glVertex3f(0, 0.2, -0.14);
+            glVertex3f(0, 0.2, 0.10);
+        glEnd();
+        
+        glRotatef(120, 0, 0, 1);
+        glBegin(GL_POLYGON);
+            glNormal3f(-1, 0, 0);
+            glVertex3f(0, 0, 0);
+            glVertex3f(0, 0, -0.24);
+            glVertex3f(0, 0.2, -0.14);
+            glVertex3f(0, 0.4, 0.10);
+        glEnd();
+        
+        glRotatef(120, 0, 0, 1);
+        glBegin(GL_POLYGON);
+            glNormal3f(-1, 0, 0);
+            glVertex3f(0, 0, 0);
+            glVertex3f(0, 0, -0.24);
+            glVertex3f(0, 0.2, -0.14);
+            glVertex3f(0, 0.2, 0.10);
+        glEnd();
     glPopMatrix();
 }
 

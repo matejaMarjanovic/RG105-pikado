@@ -2,6 +2,7 @@
 
 #include "lighting.hpp"
 #include <cmath>
+#include <iostream>
 
 class Game;
 class Camera;
@@ -11,7 +12,7 @@ class Dart;
 class ShootingSpot {
 public:
     ShootingSpot(double posX, double posY, double posZ)
-        : m_posX{posX}, m_posY{posY+1}, m_posZ{posZ} { }
+        : m_posX{posX}, m_posY{posY}, m_posZ{posZ} { }
     friend class Dart;
     friend class Game;
 private:

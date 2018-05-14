@@ -3,7 +3,7 @@
 void Camera::changeCam(const Dart &dart) {
     m_posX = dart.m_posX;
     m_posY = dart.m_posY;
-    m_posZ = dart.m_posZ;
+    m_posZ = dart.m_posZ-4;
     setCam();
 }
 void Camera::setCam() const {
@@ -18,8 +18,8 @@ void Camera::setCam() const {
     }
     else if(m_shootPhase) {
         gluLookAt(
-            0, 0, -15,
-            0, 0, 0,
+            m_posX, m_posY+0.5, m_posZ,
+            m_posX, m_posY, m_posZ+2,
             0, 1, 0
         );
     }

@@ -14,7 +14,18 @@ double animationParameter = 0;
 
 double x, y, z;
 int width, height;
-Game game{Dartboard{DartboardCircle{5.7}, 15, 20}, Dart{0, 0, -13, 1, 0.1, 2.7, ShootingSpot{0, 0, 0}}};
+Game game{
+    Dartboard{
+        DartboardCircle{5.7}, 
+        15, 20}, 
+    Dart{
+        0, 0, -13, 
+        1, 0.085, 2.7, 
+        ShootingSpot{
+            0, 0, 0
+        }
+    }
+};
 Camera cam{game};
 
 int main(int argc, char** argv) {
@@ -111,7 +122,7 @@ void keyboard(unsigned char c, int x, int y) {
 void onTimer(int value) {
     if(animationParameter <= 1) {
         game.play(animationParameter);
-        animationParameter += 0.015;
+        animationParameter += 0.019;
         
         glutPostRedisplay();
         if(game.m_shootPhase) {
