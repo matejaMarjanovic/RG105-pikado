@@ -45,6 +45,7 @@ void Game::play(double animParam) {
         m_dart.m_startPosY + animParam*1.42*m_dart.deltaY(), 
         m_dart.m_startPosZ + animParam*m_dart.deltaZ()
     );
+    m_dart.setAngle(animParam*180*2.3/M_PI);
 }
 
 ShootingSpot Game::shoot() const {

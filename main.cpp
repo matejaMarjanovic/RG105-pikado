@@ -97,6 +97,7 @@ void keyboard(unsigned char c, int x, int y) {
                 cam.m_shootPhase = true;
                 cam.setCam();
                 game.dart().setShoot(game.shoot());
+                game.dart().setShootRotataion(); 
                 glutTimerFunc(20, onTimer, 0);
             }
             break;
@@ -122,7 +123,7 @@ void keyboard(unsigned char c, int x, int y) {
 void onTimer(int value) {
     if(animationParameter <= 1) {
         game.play(animationParameter);
-        animationParameter += 0.019;
+        animationParameter += 0.022;
         
         glutPostRedisplay();
         if(game.m_shootPhase) {
