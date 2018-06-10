@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include "lighting.hpp"
 #include <cmath>
 
@@ -15,6 +16,7 @@ private:
     void drawLineCircle1() const;
     void drawLineCircle2() const;
     void drawCentralCirlces() const;
+    void drawNumericValues() const;
     double m_radius;
 };
 

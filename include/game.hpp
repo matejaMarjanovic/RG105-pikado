@@ -12,7 +12,10 @@ public:
     Game(const Dartboard &dartboard, const Dart &dart, bool pickPhase = true, bool shootPhase = false)
         : m_pickPhase{pickPhase}, m_shootPhase{shootPhase},
           m_dartboard{dartboard}, m_dart{dart},
-          m_shoot{dart.m_shoot} { }
+          m_shoot{dart.m_shoot} {
+              m_startGame = false;
+              m_valueSum = 0;
+        }
     void render() const;
     void play(double animParam);
     Dart& dart();
@@ -22,11 +25,15 @@ public:
     void goLeft();
     void goRight();
     ShootingSpot shoot() const;
+    void printResult() const;
+    int getValue() const;
     void resetGame();
-    bool m_pickPhase, m_shootPhase, m_moveBack;
+    void increaseValueSum();
+    bool m_pickPhase, m_shootPhase, m_moveBack, m_startGame;
     friend class Camera;
 private:
     Dartboard m_dartboard;
     Dart m_dart;
     ShootingSpot m_shoot;
+    int m_valueSum;
 };

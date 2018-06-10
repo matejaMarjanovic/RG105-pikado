@@ -2,6 +2,7 @@
 #include "game.hpp"
 #include "camera.hpp"
 #include <iostream>
+#include <ctime>
 
 #define TIMER_INT 20
 #define MOVE_BACK 0
@@ -28,7 +29,7 @@ Game game{
         15, 20}, 
     Dart{
         0, 0, -13, 
-        1, 0.085, 2.7, 
+        0, 0.085, 2.7, 
         ShootingSpot{
             0, 0, 0
         }
@@ -58,6 +59,7 @@ int main(int argc, char** argv) {
 
 // lighting init 
 void initialize() {
+    srand(time(NULL));
     glClearColor(0.75, 0.75, 0.75, 0);
     
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
@@ -98,60 +100,76 @@ void keyboard(unsigned char c, int x, int y) {
     switch(c) {
         case 27:
             exit(EXIT_SUCCESS);
-        case 'g': // pick phase ends and shoot phase begins
-            if(!game.m_shootPhase && cam.readyForFire()) {
-                animationParameter = 0;
-                game.m_pickPhase = false;
-                cam.m_pickPhase = false;
-                game.m_shootPhase = true;
-                cam.m_shootPhase = true;
+        
+        case ' ':
+            if(!game.m_startGame) {
+                game.m_startGame = true;
+                glutPostRedisplay();
+            }
+            break;
+    }
+    if(game.m_startGame) {
+        switch(c) {
+            case 'g': // pick phase ends and shoot phase begins
+                if(!game.m_shootPhase && cam.readyForFire()) {
+                    animationParameter = 0;
+                    game.m_pickPhase = false;
+                    cam.m_pickPhase = false;
+                    game.m_shootPhase = true;
+                    cam.m_shootPhase = true;
+                    cam.setCam();
+                    glutTimerFunc(TIMER_INT, onTimer, SHOOT);
+                }
+                break;
+            case 'p':
+                if(game.m_pickPhase) {
+                    game.dart().setShoot(game.shoot());
+                    game.dart().setShootRotataion(); 
+                    game.m_moveBack = true;
+                    cam.m_moveBack = true;
+                    glutTimerFunc(TIMER_INT, onTimer, MOVE_BACK);
+                }
+                break;
+            case 'r': // reseting done the hard way
+                // we reset all of the objects in game and the objects in those objects
+                game.resetGame();
+                cam.resetGame(game);
+                // get the camera back to it's initial position
                 cam.setCam();
-                glutTimerFunc(TIMER_INT, onTimer, SHOOT);
-            }
-            break;
-        case 'p':
-            if(game.m_pickPhase) {
-                game.dart().setShoot(game.shoot());
-                game.dart().setShootRotataion(); 
-                game.m_moveBack = true;
-                cam.m_moveBack = true;
-                glutTimerFunc(TIMER_INT, onTimer, MOVE_BACK);
-            }
-            break;
-        case 'r': // reseting done the hard way
-            // we reset all of the objects in game and the objects in those objects
-            game.resetGame();
-            cam.resetGame(game);
-            // get the camera back to it's initial position
-            cam.setCam();
-            animationParameter = 0;
-            glutPostRedisplay();
-            break;
-        // these are used for setting the shooting spot
-        case 'w':
-            if(game.m_pickPhase) {
-                game.goUp();
+                animationParameter = 0;
                 glutPostRedisplay();
-            }
-            break;
-        case 'a':
-            if(game.m_pickPhase) {
-                game.goLeft();
-                glutPostRedisplay();
-            }
-            break;
-        case 's':
-            if(game.m_pickPhase) {
-                game.goDown();
-                glutPostRedisplay();
-            }
-            break;
-        case 'd':
-            if(game.m_pickPhase) {
-                game.goRight();
-                glutPostRedisplay();
-            }
-            break;
+                break;
+            // these are used for setting the shooting spot
+            case 'w':
+                if(game.m_pickPhase) {
+                    game.goUp();
+                    glutPostRedisplay();
+                }
+                break;
+            case 'a':
+                if(game.m_pickPhase) {
+                    game.goLeft();
+                    glutPostRedisplay();
+                }
+                break;
+            case 's':
+                if(game.m_pickPhase) {
+                    game.goDown();
+                    glutPostRedisplay();
+                }
+                break;
+            case 'd':
+                if(game.m_pickPhase) {
+                    game.goRight();
+                    glutPostRedisplay();
+                }
+                break;
+            case ' ':
+                if(game.m_pickPhase) {
+                    game.dart().increaseStrength();
+                }
+                break;
+        }
     }
 }
 
@@ -176,12 +194,15 @@ void onTimer(int value) {
     if(value == SHOOT) {
         if(animationParameter <= 1) {
             game.play(animationParameter);
-            animationParameter += 0.007;
+            animationParameter += 0.027;
             
             glutPostRedisplay();
             if(game.m_shootPhase) {
                 glutTimerFunc(TIMER_INT, onTimer, SHOOT);
             }
+        }
+        else {
+            game.increaseValueSum();
         }
     }
 }

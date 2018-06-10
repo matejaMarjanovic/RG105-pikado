@@ -59,7 +59,6 @@ void Dart::render() const {
     // the sharp part
     goldMaterial.setLighting();
     glPushMatrix();
-        
         glTranslatef(0, 0, m_length);
         glRotatef(m_angle, 0, 0, 1);
         glutSolidCone(m_radius, m_length*0.4, 40, 40);
@@ -133,9 +132,38 @@ void Dart::move(double x, double y, double z){
 
 // sets the shooting spot when the players picks it
 void Dart::setShoot(const ShootingSpot &shoot) {
-    m_shoot.m_posX = shoot.m_posX;
+    
+    double prec = (24-m_strength);
+    prec = prec > 0 ? prec/5 : -prec/5;
+    m_shoot.m_posX = shoot.m_posX + prec*rand()/RAND_MAX;
     m_shoot.m_posY = shoot.m_posY;
     m_shoot.m_posZ = shoot.m_posZ;
+    
+    m_shoot.calculateValue(m_radius);
+}
+
+void ShootingSpot::calculateValue(double radius) {
+    /*(m_posX, m_posY) o (1, 0)*/ 
+    
+    if(m_posX*m_posX + m_posY*m_posY >= radius*radius) {
+        m_value = 0;
+        return;
+    }
+    
+    double angle = acos(m_posX / sqrt(m_posX*m_posX + m_posY*m_posY));
+    if(m_posY < 0) {
+        angle = 2*M_PI - angle;
+    }
+    
+    for(int i = 0; i < 20; ++i) {
+        double angle1 = i*M_PI/10.0 - M_PI/20.0;
+        double angle2 = i*M_PI/10.0 + M_PI/20.0;
+        if(angle <= angle2 && angle >= angle1) {
+            int values[] = {6, 13, 4, 18, 1, 20, 5, 12, 9, 14, 11, 8, 16, 7, 19, 3, 17, 2, 5, 10};
+            m_value = values[i];
+            break;
+        }
+    }
 }
 
 // for the parametric form of a line between 
@@ -159,8 +187,13 @@ void Dart::resetGame() {
     m_posX = 0; 
     m_posY = 0; 
     m_posZ = -13; 
-    m_speed = 1;
+    m_strength = 0;
     m_radius = 0.085; 
     m_length = 2.7;
     m_shoot.resetGame();
+}
+
+// increase the dart throw strength
+void Dart::increaseStrength() {
+    m_strength += 1;
 }

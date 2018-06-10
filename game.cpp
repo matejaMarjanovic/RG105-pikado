@@ -3,13 +3,41 @@
 // calls the render functions of other objects 
 // depending on the current state of the app
 void Game::render() const {
-    m_dartboard.render();
-    if(m_pickPhase) {
-        drawShootingSpot();
+    if(m_startGame) {
+        m_dartboard.render();
+        if(m_pickPhase) {
+            drawShootingSpot();
+        }
+        else if(m_shootPhase) {
+            m_dart.render();
+        }
     }
-    else if(m_shootPhase) {
-        m_dart.render();
+    else {
+        std::string str("Press space to start the game");
+        glRasterPos3f(3, 0, 0);
+
+        for (auto c : str) {
+            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, c);
+        }
     }
+}
+
+void Game::printResult() const {
+    int digits[4];
+    int d = m_valueSum;
+    int i = 0;
+    while(d) {
+        digits[i++] = d%10;
+        d /= 10;
+    }
+    glDisable(GL_LIGHTING);
+    glColor3f(1, 1, 1);
+    glRasterPos3f(0, 3.3, 1);
+
+    while(i > 0) {
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, digits[--i]+'0');
+    }
+    glEnable(GL_LIGHTING);
 }
 
 // these functions move the shooting spot triangle
@@ -42,7 +70,10 @@ void Game::drawShootingSpot() const {
             glVertex3f(m_shoot.m_posX-0.1, m_shoot.m_posY-0.2, -1.5);
             glVertex3f(m_shoot.m_posX+0.1, m_shoot.m_posY-0.2, -1.5);
         glEnd();
-        }
+    }
+    else {
+        printResult();
+    }
 }
 
 // moves the dart on the line that represents the direction of the shooting spot
@@ -53,6 +84,15 @@ void Game::play(double animParam) {
         m_dart.m_startPosZ + animParam*m_dart.deltaZ()
     );
     m_dart.setAngle(animParam*180*2.3/M_PI);
+}
+
+// get the value that the dart hit
+int Game::getValue() const {
+    return m_dart.m_shoot.m_value;
+}
+
+void Game::increaseValueSum() {
+    m_valueSum += getValue();
 }
 
 // reseting the game

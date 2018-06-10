@@ -27,10 +27,27 @@ void Dartboard::render(void) const {
 // renders a circle that is constructed of a few layers
 void DartboardCircle::render() const {
     glScalef(m_radius, m_radius, 1);
+    drawNumericValues();
     drawBigCircle();
     drawLineCircle1();
     drawLineCircle2();
     drawCentralCirlces();
+}
+
+void DartboardCircle::drawNumericValues() const {
+    std::string strings[] = {"6", "13", "4", "18", "1", "20", "5", "12", "9", "14", "11", "8", "16", "7", "19", "3", "17", "2", "5", "10"};
+    
+    glDisable(GL_LIGHTING);
+    glColor3f(1, 1, 1);
+    for(int i = 0; i < 20; ++i) {
+        std::string str(strings[i]);
+        glRasterPos3f(1.3*cos(i*M_PI/10.0), 1.3*sin(i*M_PI/10.0), 1);
+
+        for (auto c : str) {
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, c);
+        }
+    }
+    glEnable(GL_LIGHTING);
 }
 
 // these functions are the "layers" for the dartboard circle
