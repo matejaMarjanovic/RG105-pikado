@@ -176,7 +176,7 @@ void onTimer(int value) {
     if(value == SHOOT) {
         if(animationParameter <= 1) {
             game.play(animationParameter);
-            animationParameter += 0.027;
+            animationParameter += 0.007;
             
             glutPostRedisplay();
             if(game.m_shootPhase) {
