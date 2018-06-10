@@ -132,14 +132,18 @@ void Dart::move(double x, double y, double z){
 
 // sets the shooting spot when the players picks it
 void Dart::setShoot(const ShootingSpot &shoot) {
-    
+    std::cout << m_strength << std::endl;
     double prec = (24-m_strength);
-    prec = prec > 0 ? prec/5 : -prec/5;
-    m_shoot.m_posX = shoot.m_posX + prec*rand()/RAND_MAX;
-    m_shoot.m_posY = shoot.m_posY;
+    prec = prec > 0 ? prec/6.0 : -prec/6.0;
+    int rand1 = rand();
+    int rand2 = rand();
+    double sgn1 = rand1 % 2 ? -1 : 1;
+    double sgn2 = rand2 % 2 ? -1 : 1;
+    m_shoot.m_posX = shoot.m_posX + sgn1*prec*rand1/RAND_MAX;
+    m_shoot.m_posY = shoot.m_posY + sgn2*prec*rand2/RAND_MAX;;
     m_shoot.m_posZ = shoot.m_posZ;
     
-    m_shoot.calculateValue(m_radius);
+    m_shoot.calculateValue(5.7);
 }
 
 void ShootingSpot::calculateValue(double radius) {
@@ -159,8 +163,8 @@ void ShootingSpot::calculateValue(double radius) {
         double angle1 = i*M_PI/10.0 - M_PI/20.0;
         double angle2 = i*M_PI/10.0 + M_PI/20.0;
         if(angle <= angle2 && angle >= angle1) {
-            int values[] = {6, 13, 4, 18, 1, 20, 5, 12, 9, 14, 11, 8, 16, 7, 19, 3, 17, 2, 5, 10};
-            m_value = values[i];
+            std::string values[] = {"11", "14", "9", "12", "5", "20", "1", "18", "4", "13", "6", "10", "5", "2", "17", "3", "19", "7", "16", "8"};
+            m_value = stoi(values[i]);
             break;
         }
     }

@@ -22,6 +22,10 @@ void Game::render() const {
     }
 }
 
+void Game::increaseStrength() {
+    m_dart.increaseStrength();
+}
+
 void Game::printResult() const {
     int digits[4];
     int d = m_valueSum;
@@ -32,7 +36,7 @@ void Game::printResult() const {
     }
     glDisable(GL_LIGHTING);
     glColor3f(1, 1, 1);
-    glRasterPos3f(0, 3.3, 1);
+    glRasterPos3f(0, 15, 1);
 
     while(i > 0) {
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, digits[--i]+'0');

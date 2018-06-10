@@ -29,6 +29,7 @@ public:
     int getValue() const;
     void resetGame();
     void increaseValueSum();
+    void increaseStrength();
     bool m_pickPhase, m_shootPhase, m_moveBack, m_startGame;
     friend class Camera;
 private:

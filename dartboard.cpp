@@ -35,7 +35,7 @@ void DartboardCircle::render() const {
 }
 
 void DartboardCircle::drawNumericValues() const {
-    std::string strings[] = {"6", "13", "4", "18", "1", "20", "5", "12", "9", "14", "11", "8", "16", "7", "19", "3", "17", "2", "5", "10"};
+    std::string strings[] = {"11", "14", "9", "12", "5", "20", "1", "18", "4", "13", "6", "10", "5", "2", "17", "3", "19", "7", "16", "8"};
     
     glDisable(GL_LIGHTING);
     glColor3f(1, 1, 1);

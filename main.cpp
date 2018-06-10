@@ -97,16 +97,12 @@ void render(void) {
 }
 
 void keyboard(unsigned char c, int x, int y) {
-    switch(c) {
-        case 27:
-            exit(EXIT_SUCCESS);
-        
-        case ' ':
-            if(!game.m_startGame) {
-                game.m_startGame = true;
-                glutPostRedisplay();
-            }
-            break;
+    if(c == 27) {
+        exit(EXIT_SUCCESS);
+    }
+    if(!game.m_startGame && c == ' ') {
+        game.m_startGame = true;
+        glutPostRedisplay();
     }
     if(game.m_startGame) {
         switch(c) {
@@ -166,7 +162,7 @@ void keyboard(unsigned char c, int x, int y) {
                 break;
             case ' ':
                 if(game.m_pickPhase) {
-                    game.dart().increaseStrength();
+                    game.increaseStrength();
                 }
                 break;
         }
