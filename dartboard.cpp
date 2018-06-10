@@ -1,5 +1,7 @@
 #include "dartboard.hpp"
 
+// renders the dartboard
+// a black cube and a circle
 void Dartboard::render(void) const {
     ObjectMaterial dartboardMaterial{
         std::vector<GLfloat>{0.05, 0.05, 0.05, 1},
@@ -22,6 +24,7 @@ void Dartboard::render(void) const {
     glPopMatrix();
 }
 
+// renders a circle that is constructed of a few layers
 void DartboardCircle::render() const {
     glScalef(m_radius, m_radius, 1);
     drawBigCircle();
@@ -30,6 +33,7 @@ void DartboardCircle::render() const {
     drawCentralCirlces();
 }
 
+// these functions are the "layers" for the dartboard circle
 void DartboardCircle::drawCentralCirlces() const {
     ObjectMaterial redMaterial{
         std::vector<GLfloat>{0.05, 0.05, 0.05, 1},
@@ -144,5 +148,15 @@ void DartboardCircle::drawLineCircle2() const {
     }
 }
 
+// reseting to initial values
+void Dartboard::resetGame() {
+    m_dartCirc.resetGame();
+    m_width = 15; 
+    m_height = 20;
+}
+
+void DartboardCircle::resetGame() {
+    m_radius = 5.7;
+}
 
 

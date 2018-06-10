@@ -3,6 +3,7 @@
 #include <GL/glut.h>
 #include <vector>
 
+// These classes just make it easier to color the objects in the scene
 class ObjectMaterial {
 public:
     ObjectMaterial(std::vector<GLfloat> amb, std::vector<GLfloat> diff, std::vector<GLfloat> spec, GLfloat shininess)

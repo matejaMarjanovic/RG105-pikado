@@ -9,6 +9,7 @@ public:
     DartboardCircle(const double &radius)
         : m_radius{radius} { }
     void render(void) const;
+    void resetGame();
 private:
     void drawBigCircle() const;
     void drawLineCircle1() const;
@@ -25,6 +26,7 @@ public:
          m_width{width}, 
          m_height{height} { }
     void render() const;
+    void resetGame();
 private:
     DartboardCircle m_dartCirc;
     double m_width, m_height;

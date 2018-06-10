@@ -9,16 +9,19 @@ class Camera;
 class ShootingSpot;
 class Dart;
 
+// this class is used to save the shooting spot the player has picked
 class ShootingSpot {
 public:
     ShootingSpot(double posX, double posY, double posZ)
         : m_posX{posX}, m_posY{posY}, m_posZ{posZ} { }
+    void resetGame();
     friend class Dart;
     friend class Game;
 private:
     double m_posX, m_posY, m_posZ;
 };
 
+// this class is responsible for rendering, moving, rotating... the dart
 class Dart {
 public:
     Dart(const double &posX, const double &posY, const double &posZ, const double &speed, 
@@ -34,6 +37,7 @@ public:
     void setShoot(const ShootingSpot &shoot);
     void setAngle(const double &angle);
     void setShootRotataion();
+    void resetGame();
     friend class Camera;
     friend class Game;
 private:

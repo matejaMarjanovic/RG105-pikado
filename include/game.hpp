@@ -6,6 +6,7 @@
 
 class Camera;
 
+// this is the main class which renders all objects and move them
 class Game {
 public:
     Game(const Dartboard &dartboard, const Dart &dart, bool pickPhase = true, bool shootPhase = false)
@@ -21,7 +22,8 @@ public:
     void goLeft();
     void goRight();
     ShootingSpot shoot() const;
-    bool m_pickPhase, m_shootPhase;
+    void resetGame();
+    bool m_pickPhase, m_shootPhase, m_moveBack;
     friend class Camera;
 private:
     Dartboard m_dartboard;
