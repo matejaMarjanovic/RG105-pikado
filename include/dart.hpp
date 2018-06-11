@@ -5,6 +5,9 @@
 #include <iostream>
 #include <cstdlib>
 
+#define DART 0
+#define PEN 1
+
 class Game;
 class Camera;
 class ShootingSpot;
@@ -28,10 +31,12 @@ private:
 class Dart {
 public:
     Dart(const double &posX, const double &posY, const double &posZ, const double &strength, 
-         const double &radius, const double &length, const ShootingSpot &shoot, const double &angle = 0)
+         const double &radius, const double &length, const ShootingSpot &shoot, const double &angle = 0, 
+         const int shape = DART)
         : m_posX{posX}, m_posY{posY}, m_posZ{posZ}, m_strength{strength},
           m_radius{radius}, m_length{length}, m_shoot{shoot},
           m_startPosX{posX}, m_startPosY{posY}, m_startPosZ{posZ} { }
+    void render() const;
     void renderPen() const;
     void renderDart() const;
     void move(double x, double y, double z);
@@ -43,6 +48,7 @@ public:
     void setAngle(const double &angle);
     void setShootRotataion();
     void resetGame();
+    void changeDart();
     friend class Camera;
     friend class Game;
 private:
@@ -52,4 +58,5 @@ private:
     double m_startPosX, m_startPosY, m_startPosZ;
     double m_angle;
     double m_shootRotationX, m_shootRotationY;
+    int m_shape;
 };

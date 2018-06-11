@@ -36,6 +36,15 @@ void Dart::setShootRotataion() {
     }
 }
 
+void Dart::render() const {
+    if(m_shape == PEN) {
+        renderPen();
+    }
+    else {
+        renderDart();
+    }
+}
+
 // draws the dart
 void Dart::renderDart() const {
     ObjectMaterial redMaterial{
@@ -195,7 +204,6 @@ void Dart::move(double x, double y, double z){
 
 // sets the shooting spot when the players picks it
 void Dart::setShoot(const ShootingSpot &shoot) {
-    std::cout << m_strength << std::endl;
     double prec = (24-m_strength);
     prec = prec > 0 ? prec/6.0 : -prec/6.0;
     int rand1 = rand();
@@ -206,17 +214,30 @@ void Dart::setShoot(const ShootingSpot &shoot) {
     m_shoot.m_posY = shoot.m_posY + sgn2*prec*rand2/RAND_MAX;;
     m_shoot.m_posZ = shoot.m_posZ;
     
-    m_shoot.calculateValue(5.7);
+    m_shoot.calculateValue(4);
 }
 
+// calculate the shooting spot value and eventually multiply it by 2 or 3
+// or return 50 or 25 if you hit the center
 void ShootingSpot::calculateValue(double radius) {
-    /*(m_posX, m_posY) o (1, 0)*/ 
     
     if(m_posX*m_posX + m_posY*m_posY >= radius*radius) {
         m_value = 0;
         return;
     }
     
+    if(m_posX*m_posX + m_posY*m_posY <= radius*radius*0.0425*0.0425) {
+        m_value = 50;
+        return;
+    }
+    
+    if(m_posX*m_posX + m_posY*m_posY <= radius*radius*0.085*0.085) {
+        m_value = 25;
+        return;
+    }
+    
+    
+    /*(m_posX, m_posY) o (1, 0)*/ 
     double angle = acos(m_posX / sqrt(m_posX*m_posX + m_posY*m_posY));
     if(m_posY < 0) {
         angle = 2*M_PI - angle;
@@ -228,8 +249,25 @@ void ShootingSpot::calculateValue(double radius) {
         if(angle <= angle2 && angle >= angle1) {
             std::string values[] = {"11", "14", "9", "12", "5", "20", "1", "18", "4", "13", "6", "10", "5", "2", "17", "3", "19", "7", "16", "8"};
             m_value = stoi(values[i]);
+            if(m_posX*m_posX + m_posY*m_posY >= (radius*0.56)*(radius*0.56) &&
+               m_posX*m_posX + m_posY*m_posY <= (radius*0.63)*(radius*0.63)) {
+                m_value *= 3;
+            }
+            if(m_posX*m_posX + m_posY*m_posY >= (radius*0.87)*(radius*0.87) &&
+               m_posX*m_posX + m_posY*m_posY <= (radius)*(radius)) {
+                m_value *= 2;
+            }
             break;
         }
+    }   
+}
+
+void Dart::changeDart() {
+    if(m_shape == PEN) {
+        m_shape = DART;
+    }
+    else {
+        m_shape = PEN;
     }
 }
 

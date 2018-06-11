@@ -9,7 +9,7 @@ void Game::render() const {
             drawShootingSpot();
         }
         else if(m_shootPhase) {
-            m_dart.renderPen();
+            m_dart.render();
         }
     }
     else {

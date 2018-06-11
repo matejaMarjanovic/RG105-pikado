@@ -165,6 +165,10 @@ void keyboard(unsigned char c, int x, int y) {
                     game.increaseStrength();
                 }
                 break;
+            case 'c':
+                game.dart().changeDart();
+                glutPostRedisplay();
+                break;
         }
     }
 }
