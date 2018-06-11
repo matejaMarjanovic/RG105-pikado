@@ -32,7 +32,8 @@ public:
         : m_posX{posX}, m_posY{posY}, m_posZ{posZ}, m_strength{strength},
           m_radius{radius}, m_length{length}, m_shoot{shoot},
           m_startPosX{posX}, m_startPosY{posY}, m_startPosZ{posZ} { }
-    void render() const;
+    void renderPen() const;
+    void renderDart() const;
     void move(double x, double y, double z);
     double deltaX() const;
     double deltaY() const;
