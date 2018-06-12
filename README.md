@@ -35,4 +35,4 @@ $ make
 > When you're finished with that you should click P and wait for a second or two and then click G
 > You can also change the shape of the dart. It can be a dart or it can be a pen.
 
-[https://www.youtube.com/watch?v=s5qw5-4DjvE&feature=youtu.be](Gameplay)
+[youtube link](https://www.youtube.com/watch?v=s5qw5-4DjvE&feature=youtu.be)
